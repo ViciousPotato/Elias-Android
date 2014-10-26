@@ -1,10 +1,10 @@
 package me.viciouspotato.elias_android.elias;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
-
-
+import android.provider.MediaStore;
 
 
 /**
@@ -31,6 +31,8 @@ public class BitListActivity extends Activity
      * device.
      */
     private boolean mTwoPane;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private Uri fileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,10 @@ public class BitListActivity extends Activity
         }
 
         // TODO: If exposing deep links into your app, handle intents here.
+      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+      startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
     /**
@@ -80,4 +86,16 @@ public class BitListActivity extends Activity
             startActivity(detailIntent);
         }
     }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+      if (resultCode == RESULT_OK) {
+
+      } else if (resultCode == RESULT_CANCELED) {
+
+      } else {
+      }
+    }
+  }
 }
