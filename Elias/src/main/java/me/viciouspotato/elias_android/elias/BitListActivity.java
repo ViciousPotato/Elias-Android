@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 import com.cengalabs.flatui.FlatUI;
 
 
@@ -61,10 +63,6 @@ public class BitListActivity extends Activity
         }
 
         // TODO: If exposing deep links into your app, handle intents here.
-      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-
-      startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
     /**
@@ -104,5 +102,31 @@ public class BitListActivity extends Activity
       } else {
       }
     }
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.listbar, menu);
+
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.takephoto:
+        openCamera();
+        break;
+      default:
+        break;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  void openCamera() {
+    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
   }
 }

@@ -3,5 +3,6 @@
 
     <string name="app_name">Elias-Android</string>
     <string name="title_bit_detail">Bit Detail</string>
+    <string name="take_photo">Photo</string>
 
 </resources>
