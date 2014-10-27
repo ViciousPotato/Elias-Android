@@ -7,5 +7,11 @@
         jumboMode="false"
         revision="21.0.2"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
+    <item
+        dex="/Users/zhou/Projects/Elias-Android/Elias/build/intermediates/pre-dexed/debug/classes-0e7db3d6e96251b0bd5066996e05d9d0ef3d67a5.jar"
+        jar="/Users/zhou/Projects/Elias-Android/Elias/build/intermediates/exploded-aar/com.github.eluleci/flatui/3.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.0.2"
+        sha1="d1089efa4a24767294278997764bea2fda31ccca"/>
 
 </pre-dex-items>

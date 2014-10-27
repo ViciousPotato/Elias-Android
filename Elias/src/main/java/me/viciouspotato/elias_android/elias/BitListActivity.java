@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.provider.MediaStore;
+import com.cengalabs.flatui.FlatUI;
 
 
 /**
@@ -37,7 +38,13 @@ public class BitListActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FlatUI.initDefaultValues(this);
+        FlatUI.setDefaultTheme(FlatUI.GRASS);
+
         setContentView(R.layout.activity_bit_list);
+
+        getActionBar().setBackgroundDrawable(FlatUI.getActionBarDrawable(this, FlatUI.GRASS, false));
 
         if (findViewById(R.id.bit_detail_container) != null) {
             // The detail container view will be present only in the

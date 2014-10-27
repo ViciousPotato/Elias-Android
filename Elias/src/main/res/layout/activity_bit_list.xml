@@ -1,4 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:flatui="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bit_list"
     android:name="me.viciouspotato.elias_android.elias.BitListFragment"
@@ -6,5 +7,6 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
+    flatui:fl_theme="@array/grass"
     tools:context="me.viciouspotato.elias_android.elias.BitListActivity"
     tools:layout="@android:layout/list_content" />
