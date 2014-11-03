@@ -1,13 +1,19 @@
 package me.viciouspotato.elias_android.elias;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.cengalabs.flatui.FlatUI;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 
 /**
@@ -36,6 +42,7 @@ public class BitListActivity extends Activity
     private boolean mTwoPane;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri fileUri;
+    private final String TAG = "BitList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,14 @@ public class BitListActivity extends Activity
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
       if (resultCode == RESULT_OK) {
+        /*
+        * BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        * bmOptions.inJustDecodeBounds = true; // ??
+        * BitmapFactory.decodeFile(fileUri.getPath(), bmOptions);
+        * */
+        Bundle extras = data.getExtras();
+        Bitmap imageBitmap = (Bitmap)extras.get("data");
+
 
       } else if (resultCode == RESULT_CANCELED) {
 
@@ -124,9 +139,26 @@ public class BitListActivity extends Activity
   }
 
   void openCamera() {
-    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+    try {
+      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+      // Create temp file
+      File outputFile = File.createTempFile(TAG, "jpg", getCacheDir());
+      fileUri = Uri.fromFile(outputFile);
 
-    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+      intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+      startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    } catch (Exception e) {
+      Log.w("Warning", "File creation failed.");
+    }
+  }
+
+  private class UploadTask extends AsyncTask<Bitmap, Void, Void> {
+    protected Void doInBackground(Bitmap... bitmaps) {
+      setProgress(0);
+
+      Bitmap bitmap = bitmaps[0];
+      ByteArrayOutputStream stream = new ByteArrayOutputStream();
+      bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+    }
   }
 }
