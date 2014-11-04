@@ -11,9 +11,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.cengalabs.flatui.FlatUI;
+import me.viciouspotato.elias_android.elias.util.MultipartEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.*;
 
 
 /**
@@ -111,6 +115,7 @@ public class BitListActivity extends Activity
         Bundle extras = data.getExtras();
         Bitmap imageBitmap = (Bitmap)extras.get("data");
 
+        new UploadTask().execute(imageBitmap);
 
       } else if (resultCode == RESULT_CANCELED) {
 
@@ -142,10 +147,10 @@ public class BitListActivity extends Activity
     try {
       Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       // Create temp file
-      File outputFile = File.createTempFile(TAG, "jpg", getCacheDir());
-      fileUri = Uri.fromFile(outputFile);
+      // File outputFile = File.createTempFile(TAG, "jpg", getCacheDir());
+      // fileUri = Uri.fromFile(outputFile);
 
-      intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+      // intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
       startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     } catch (Exception e) {
       Log.w("Warning", "File creation failed.");
@@ -159,6 +164,32 @@ public class BitListActivity extends Activity
       Bitmap bitmap = bitmaps[0];
       ByteArrayOutputStream stream = new ByteArrayOutputStream();
       bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+      InputStream in = new ByteArrayInputStream(stream.toByteArray());
+
+      DefaultHttpClient httpClient = new DefaultHttpClient();
+      try {
+        HttpPost httpPost = new HttpPost("http://viciouspotato.me/upload");
+
+        MultipartEntity reqEntity = new MultipartEntity();
+        reqEntity.addPart("snap", "snap.jpg", in);
+
+        httpPost.setEntity(reqEntity);
+
+        HttpResponse response = null;
+        try {
+          response = httpClient.execute(httpPost);
+        } catch (ClientProtocolException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+        Log.i(TAG, response.toString());
+      } finally {
+
+      }
+
+      return null;
     }
   }
 }
