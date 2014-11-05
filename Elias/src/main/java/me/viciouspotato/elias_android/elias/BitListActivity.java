@@ -12,12 +12,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.cengalabs.flatui.FlatUI;
 import me.viciouspotato.elias_android.elias.util.MultipartEntity;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.Attributes;
 
 
 /**
@@ -171,16 +182,34 @@ public class BitListActivity extends Activity
         HttpPost httpPost = new HttpPost("http://viciouspotato.me/upload");
 
         MultipartEntity reqEntity = new MultipartEntity();
-        reqEntity.addPart("snap", "snap.jpg", in);
+        reqEntity.addPart("attach", "snap.jpg", in);
 
         httpPost.setEntity(reqEntity);
 
         HttpResponse response = null;
         try {
           response = httpClient.execute(httpPost);
+
+          JSONTokener tokener = new JSONTokener(
+              IOUtils.toString(response.getEntity().getContent()));
+          JSONObject responseObj = new JSONObject(tokener);
+
+          String uploadedURL = responseObj.getString("url");
+
+          NameValuePair bitPair = new BasicNameValuePair("content", "![img](" + uploadedURL + ")");
+          List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+          pairList.add(bitPair);
+
+          HttpEntity bitEntity = new UrlEncodedFormEntity(pairList);
+          HttpPost bitPost = new HttpPost("http://viciouspotato.me/bit");
+          bitPost.setEntity(bitEntity);
+          HttpResponse bitResponse = httpClient.execute(bitPost);
+          Log.i(TAG, bitResponse.toString());
         } catch (ClientProtocolException e) {
           e.printStackTrace();
         } catch (IOException e) {
+          e.printStackTrace();
+        } catch (JSONException e) {
           e.printStackTrace();
         }
 

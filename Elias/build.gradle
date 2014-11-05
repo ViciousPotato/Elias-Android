@@ -36,4 +36,5 @@ dependencies {
     compile 'com.android.support:support-v4:19.+'
     compile 'com.github.eluleci:flatui:3.0.0'
     compile 'com.mcxiaoke.volley:library:1.0.7'
+    compile "commons-io:commons-io:+"
 }
