@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Elias-Android</string>
+    <string name="app_name">Elias</string>
     <string name="title_bit_detail">Bit Detail</string>
     <string name="take_photo">Photo</string>
 

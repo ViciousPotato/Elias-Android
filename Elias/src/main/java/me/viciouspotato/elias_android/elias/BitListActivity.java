@@ -2,14 +2,17 @@ package me.viciouspotato.elias_android.elias;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.cengalabs.flatui.FlatUI;
 import me.viciouspotato.elias_android.elias.util.MultipartEntity;
 import org.apache.http.HttpEntity;
@@ -26,7 +29,9 @@ import org.json.JSONTokener;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.jar.Attributes;
 
@@ -83,8 +88,6 @@ public class BitListActivity extends Activity
                     .findFragmentById(R.id.bit_list))
                     .setActivateOnItemClick(true);
         }
-
-        // TODO: If exposing deep links into your app, handle intents here.
     }
 
     /**
@@ -117,14 +120,14 @@ public class BitListActivity extends Activity
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
-        /*
-        * BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        * bmOptions.inJustDecodeBounds = true; // ??
-        * BitmapFactory.decodeFile(fileUri.getPath(), bmOptions);
-        * */
-        Bundle extras = data.getExtras();
-        Bitmap imageBitmap = (Bitmap)extras.get("data");
+      if (resultCode == Activity.RESULT_OK) {
+        Toast.makeText(this, "Captured image, preprocessing...", Toast.LENGTH_SHORT).show();
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inSampleSize = 2;
+        Bitmap imageBitmap = BitmapFactory.decodeFile(fileUri.getPath(), bmOptions);
+
+        // Bundle extras = data.getExtras();
+        // Bitmap imageBitmap = (Bitmap)extras.get("data");
 
         new UploadTask().execute(imageBitmap);
 
@@ -158,14 +161,31 @@ public class BitListActivity extends Activity
     try {
       Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
       // Create temp file
-      // File outputFile = File.createTempFile(TAG, "jpg", getCacheDir());
-      // fileUri = Uri.fromFile(outputFile);
+      /*
+      File outputFile = File.createTempFile(TAG, ".jpg", getCacheDir());
+      */
+      File outputFile = createImageFile();
+      fileUri = Uri.fromFile(outputFile);
 
-      // intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+      intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
       startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     } catch (Exception e) {
       Log.w("Warning", "File creation failed.");
     }
+  }
+
+  private File createImageFile() throws IOException {
+    // Create an image file name
+    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    String imageFileName = "JPEG_" + timeStamp + "_";
+    String storageDir = Environment.getExternalStorageDirectory() + "/picupload";
+    File dir = new File(storageDir);
+    if (!dir.exists())
+      dir.mkdir();
+
+    File image = new File(storageDir + "/" + imageFileName + ".jpg");
+
+    return image;
   }
 
   private class UploadTask extends AsyncTask<Bitmap, Void, Void> {
@@ -188,6 +208,7 @@ public class BitListActivity extends Activity
 
         HttpResponse response = null;
         try {
+          // Toast.makeText(this, "Uploading to server...", Toast.LENGTH_SHORT);
           response = httpClient.execute(httpPost);
 
           JSONTokener tokener = new JSONTokener(
@@ -219,6 +240,19 @@ public class BitListActivity extends Activity
       }
 
       return null;
+    }
+
+    @Override
+    protected void onPreExecute() {
+      super.onPreExecute();
+      Toast.makeText(BitListActivity.this, "Uploading image to server...", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onPostExecute(Void v) {
+      super.onPostExecute(v);
+
+      Toast.makeText(BitListActivity.this, "Upload finished.", Toast.LENGTH_SHORT).show();
     }
   }
 }
