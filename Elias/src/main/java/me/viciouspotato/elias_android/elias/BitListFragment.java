@@ -1,14 +1,29 @@
 package me.viciouspotato.elias_android.elias;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.text.Html;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import android.widget.TextView;
+import android.widget.Toast;
 import me.viciouspotato.elias_android.elias.dummy.DummyContent;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * A list fragment representing a list of Bits. This fragment
@@ -72,11 +87,14 @@ public class BitListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         // TODO: replace with a real list adapter.
+      /*
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 DummyContent.ITEMS));
+                */
+      new BitLoadingTask().execute();
     }
 
     @Override
@@ -149,4 +167,70 @@ public class BitListFragment extends ListFragment {
 
         mActivatedPosition = position;
     }
+
+  private class BitLoadingTask extends AsyncTask<Void, Void, String> {
+    protected String doInBackground(Void... v) {
+      DefaultHttpClient client = new DefaultHttpClient();
+      try {
+        HttpGet httpGet = new HttpGet("http://viciouspotato.me/bit/0/10");
+        HttpResponse response = client.execute(httpGet);
+        return IOUtils.toString(response.getEntity().getContent());
+      } catch (Exception e) {
+        Toast.makeText(BitListFragment.this.getActivity(), e.getMessage(), Toast.LENGTH_LONG);
+        e.printStackTrace();
+      }
+
+      return "";
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+      super.onPostExecute(result);
+
+      ArrayList<DummyContent.DummyItem> arr = new ArrayList<DummyContent.DummyItem>();
+
+      try {
+        JSONObject obj = new JSONObject(new JSONTokener(result));
+        JSONObject bits = obj.getJSONObject("bits");
+        for (Iterator<String> iter = bits.keys(); iter.hasNext();) {
+          String date = iter.next();
+          JSONArray dateBits = bits.getJSONArray(date);
+
+          for (int i = 0; i < dateBits.length(); i++) {
+            JSONObject o = dateBits.getJSONObject(i);
+            DummyContent.DummyItem item = new DummyContent.DummyItem(
+                o.getString("_id"), o.getString("content")
+            );
+            arr.add(item);
+          }
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      BitListFragment.this.setListAdapter(
+          new ArrayAdapter<DummyContent.DummyItem>(
+              BitListFragment.this.getActivity(),
+              android.R.layout.simple_list_item_activated_1,
+              android.R.id.text1,
+              arr) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+              View row;
+
+              if (null == convertView) {
+                row = BitListFragment.this.getActivity().getLayoutInflater().inflate(android.R.layout.simple_list_item_activated_1, null);
+              } else {
+                row = convertView;
+              }
+
+              TextView tv = (TextView) row.findViewById(android.R.id.text1);
+              tv.setText(Html.fromHtml(getItem(position).content));
+              //tv.setText(getItem(position));
+
+              return row;
+            }
+          });
+    }
+  }
 }
