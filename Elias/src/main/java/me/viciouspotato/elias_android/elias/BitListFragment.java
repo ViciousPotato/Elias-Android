@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import android.widget.TextView;
 import android.widget.Toast;
-import me.viciouspotato.elias_android.elias.dummy.DummyContent;
+import me.viciouspotato.elias_android.elias.model.BitContent;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -88,11 +88,11 @@ public class BitListFragment extends ListFragment {
 
         // TODO: replace with a real list adapter.
       /*
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
+        setListAdapter(new ArrayAdapter<BitContent.BitItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                DummyContent.ITEMS));
+                BitContent.ITEMS));
                 */
       new BitLoadingTask().execute();
     }
@@ -134,7 +134,7 @@ public class BitListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(BitContent.ITEMS.get(position).id);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class BitListFragment extends ListFragment {
     protected void onPostExecute(String result) {
       super.onPostExecute(result);
 
-      ArrayList<DummyContent.DummyItem> arr = new ArrayList<DummyContent.DummyItem>();
+      ArrayList<BitContent.BitItem> arr = new ArrayList<BitContent.BitItem>();
 
       try {
         JSONObject obj = new JSONObject(new JSONTokener(result));
@@ -198,7 +198,7 @@ public class BitListFragment extends ListFragment {
 
           for (int i = 0; i < dateBits.length(); i++) {
             JSONObject o = dateBits.getJSONObject(i);
-            DummyContent.DummyItem item = new DummyContent.DummyItem(
+            BitContent.BitItem item = new BitContent.BitItem(
                 o.getString("_id"), o.getString("content")
             );
             arr.add(item);
@@ -209,7 +209,7 @@ public class BitListFragment extends ListFragment {
       }
 
       BitListFragment.this.setListAdapter(
-          new ArrayAdapter<DummyContent.DummyItem>(
+          new ArrayAdapter<BitContent.BitItem>(
               BitListFragment.this.getActivity(),
               android.R.layout.simple_list_item_activated_1,
               android.R.id.text1,
@@ -226,7 +226,6 @@ public class BitListFragment extends ListFragment {
 
               TextView tv = (TextView) row.findViewById(android.R.id.text1);
               tv.setText(Html.fromHtml(getItem(position).content));
-              //tv.setText(getItem(position));
 
               return row;
             }

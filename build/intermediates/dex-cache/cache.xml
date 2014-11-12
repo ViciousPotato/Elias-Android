@@ -2,12 +2,6 @@
 <pre-dex-items>
 
     <item
-        dex="/Users/zhou/Projects/Elias-Android/Elias/build/intermediates/pre-dexed/debug/library-1.0.7-9c8aff930c00e758b05d2209253b77818c9fd1ae.jar"
-        jar="/Users/zhou/.gradle/caches/modules-2/files-2.1/com.mcxiaoke.volley/library/1.0.7/7d0f75f98b0283208d76bfd9fefebcc3257ec3bf/library-1.0.7.jar"
-        jumboMode="false"
-        revision="21.0.2"
-        sha1="7d0f75f98b0283208d76bfd9fefebcc3257ec3bf"/>
-    <item
         dex="/Users/zhou/Projects/Elias-Android/Elias/build/intermediates/pre-dexed/debug/support-v4-19.1.0-c1b5611478319f138bb75a18af9bbc3bbe171881.jar"
         jar="/Users/zhou/Documents/android-sdk-macosx/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
         jumboMode="false"
@@ -19,6 +13,12 @@
         jumboMode="false"
         revision="21.0.2"
         sha1="d1089efa4a24767294278997764bea2fda31ccca"/>
+    <item
+        dex="/Users/zhou/Projects/Elias-Android/Elias/build/intermediates/pre-dexed/debug/library-1.0.7-9c8aff930c00e758b05d2209253b77818c9fd1ae.jar"
+        jar="/Users/zhou/.gradle/caches/modules-2/files-2.1/com.mcxiaoke.volley/library/1.0.7/7d0f75f98b0283208d76bfd9fefebcc3257ec3bf/library-1.0.7.jar"
+        jumboMode="false"
+        revision="21.0.2"
+        sha1="7d0f75f98b0283208d76bfd9fefebcc3257ec3bf"/>
     <item
         dex="/Users/zhou/Projects/Elias-Android/Elias/build/intermediates/pre-dexed/debug/commons-io-2.4-33d6515edd493cb998305fbc3b73e5f09afeb1d7.jar"
         jar="/Users/zhou/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar"
