@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -70,10 +71,15 @@ public class BitListFragment extends ListFragment {
      * nothing. Used only when this fragment is not attached to an activity.
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected(String id) {
-        }
+       @Override
+       public void onItemSelected(String id) {
+       }
     };
+
+    private ArrayList<BitContent.BitItem> bitItems;
+
+    public ArrayList<BitContent.BitItem> getBitItems() { return bitItems; }
+    public void setBitItems(ArrayList<BitContent.BitItem> items) { bitItems = items; }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -134,7 +140,8 @@ public class BitListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(BitContent.ITEMS.get(position).id);
+        BitContent.BitItem item = (BitContent.BitItem)getListAdapter().getItem(position);
+        mCallbacks.onItemSelected(item.id);
     }
 
     @Override
@@ -219,7 +226,8 @@ public class BitListFragment extends ListFragment {
               View row;
 
               if (null == convertView) {
-                row = BitListFragment.this.getActivity().getLayoutInflater().inflate(android.R.layout.simple_list_item_activated_1, null);
+                LayoutInflater inflater = BitListFragment.this.getActivity().getLayoutInflater();
+                row = inflater.inflate(android.R.layout.simple_list_item_activated_1, null);
               } else {
                 row = convertView;
               }

@@ -23,13 +23,6 @@ public class BitContent {
      */
     public static Map<String, BitItem> ITEM_MAP = new HashMap<String, BitItem>();
 
-    static {
-        // Add 3 sample items.
-        addItem(new BitItem("1", "Item 1"));
-        addItem(new BitItem("2", "Item 2"));
-        addItem(new BitItem("3", "Item 3"));
-    }
-
     private static void addItem(BitItem item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);
